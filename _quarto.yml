@@ -1,0 +1,18 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Intro to Environments with Conda"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/Farhan-Faisal
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+
+
