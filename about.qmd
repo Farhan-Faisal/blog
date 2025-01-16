@@ -13,4 +13,4 @@ about:
 
 ---
 
-About this blog
+Your hub for all technical data science tutorials!
