@@ -1,5 +1,5 @@
 ---
-title: "Intro to Environments with Conda"
+title: "Intro to Environments with Conda and Docker"
 listing:
   contents: posts
   sort: "date desc"
@@ -32,7 +32,7 @@ Follow the detailed instructions provided [here](https://docs.anaconda.com/minic
 
 For a quick installation on macOS (ARM64), open your terminal and run the following commands:
 
-```
+```bash
 mkdir -p ~/miniconda3
 curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o ~/miniconda3/miniconda.sh
 bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
@@ -63,18 +63,20 @@ dependencies:
 **Step 3: Creating the environemnt from environment.yaml**
 
 While in the directory where the environemnt.yaml is locatied, run:  
-```
+```bash
 conda env create -f environment.yaml
 ```
 
 You can then activate the conda environment using:  
-```  
+```bash  
 conda activate tutorial
 ```
 
 
 ### Going One Step Further: Using Conda Lock Files
-When you install an environment from an environment file, you might notice that additional packages, which were not explicitly listed, are also installed. For example, when we create the environment form our previous environment file, we see packages like xx installed:
+When you install an environment from an environment file, you might notice that additional packages, which were not explicitly listed, are also installed. For example, when we create the environment form our previous environment file, we see packages like `xx` installed:
+
+![Subdependency Installation](env_install.gif)
 
 Why does this happen? This occurs because in the environment file, we only specify high-level packages. 
 
@@ -111,28 +113,28 @@ To generate a lock file for different platforms, run the appropriate command bel
 
 **For macOS (ARM-based, e.g., Apple Silicon):**  
 
-```
+```bash
 conda-lock -k explicit -p osx_arm64 -f environment.yaml
 ```
 
 **For macOS (intel):**  
-```
+```bash
 conda-lock -k explicit -p osx-64 -f environment.yaml
 ```
 
 **For Linux:**  
-```
+```bash
 conda-lock -k explicit -p linux-64 -f environment.yaml
 ```
 
 **For Windows:**      
-```
+```bash
 conda-lock -k explicit -p win-64 -f environment.yaml
 ```
 
 Assuming you are on macOS ARM, you can create an environment from the lock file by running:
 
-```
+```bash
 conda-lock install --name tutorial conda-osx-arm64.lock
 ```
 
@@ -143,6 +145,103 @@ You should generate all four conda lock files to ensure your collaborators have 
 **Note:**  
 - The --name flag specifies the environment name (tutorial in this case).
 - The lock file ensures the exact versions of dependencies are installed, making the environment fully reproducible across different platforms.
+
+### For Real Pros- Going even further
+Remember when I mentioned that using `conda-lock` allows us to recreate exact environment copies, including exact versions for subdependencies? I wasn’t entirely correct.
+
+While `conda-lock` does pin exact versions of subdependencies, there are certain system or OS-level dependencies that it doesn’t account for. These dependencies can vary depending on the operating system where the environment is created— whether it’s Linux, Windows, or macOS.
+
+This is where Docker comes in. Docker allows us to package an environment along with the OS kernel, such as Linux. Whenever someone runs our Docker container, they’ll be running the project in a Linux environment with the exact same dependencies. By using Docker, we ensure that the project environment is exactly the same for all collaborators, including system-level dependencies.
+
+In the next stage, I’ll guide you through the steps of setting up a Docker container with a copy of your environment from a Linux perspective.
+
+### Docker Steps
+
+**Step 1:**  Create an account on [DockerHub](https://hub.docker.com)
+
+You need a DockerHub account to manage and store your Docker images. Sign up if you don't already have an account.
+
+**Step 2:**  Download and Install [Docker](https://www.docker.com/get-started/)
+
+**Step 3:**  Make the docker file  
+Assuming you have the conda-lock file in your working project directory, create a file called `Dockerfile` in your project directory.  
+```bash
+FROM quay.io/jupyter/minimal-notebook:afe30f0c9ad8
+COPY conda-linux-64.lock /tmp/conda-linux-64.lock
+
+USER root
+
+# install lmodern for Quarto PDF rendering
+RUN sudo apt update \
+    && sudo apt install -y lmodern
+
+USER $NB_UID
+
+RUN mamba update --quiet --file /tmp/conda-linux-64.lock \
+    && mamba clean --all -y -f \
+    && fix-permissions "${CONDA_DIR}"  \
+    && fix-permissions "/home/${NB_USER}"
+RUN pip install -r /tmp/requirements.txt
+```
+Briefly, 
+- FROM command tells us we are buiding off an existing environment (linux in this case)
+- COPY command is used to transfer your conda lock file into the docker container
+- RUN commans installs all the dependencies in teh docker container
+
+**Step 4:** Build the Docker Image
+```bash
+docker build -t username/imagename:tag .
+
+```
+- The username should be your dockerhub user name.
+- The image name is your choice.
+- The tag is your choice.
+
+**Step 5:** Puch image to Docker Hub
+```bash
+docker push username/imagename:tag
+```
+
+### Using the Docker Image 
+**Step 1:**  Make the Docker Compose File in your project directory and name it `docker-compose.yaml`
+```yaml
+services:
+  pull-image:
+    image: username/imagename:tag
+    ports:
+      - "8888:8888" 
+    volumes:
+      - "${PWD}:/app/data" 
+    working_dir: /app/data
+    deploy:
+      resources:
+        limits:
+          memory: 10G
+    platform: linux/amd64
+```
+
+**Step 2:** Install docker-compose
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+Verify installation using:  
+```bash
+docker-compose --version
+```
+
+**Step 3:** Pull and Run the Docker Image  
+In your project directory, run:
+```bash
+docker-compose up
+```  
+Follow the instructions on your terminal. That should lead you to a jupyter notebook where you can work on this project inside the docker container.
+
+**Step 4:** Cleanup
+After finishing your work, close the Docker container:  
+```bash
+docker-compose down
+```
 
 ### Conclusion
 With this knowledge, you are now ready to collaborate effortlessly with others and ensure that your projects run smoothly on any system. Happy coding!
