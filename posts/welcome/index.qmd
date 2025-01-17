@@ -22,7 +22,7 @@ In the next section, I will show you how to set up an environment file and insta
 
 ### Setting Up Conda Environments 🛠 
 
-**Step 1:** Installing Miniconda [1]
+**Step 1:** Installing Miniconda [[1]](https://docs.anaconda.com/miniconda/install/#quick-command-line-install)  
 To get started, you need to install Miniconda, a lightweight version of Anaconda that provides just the essentials for managing Conda environments.
 
 Follow the detailed instructions provided [here](https://docs.anaconda.com/miniconda/install/#quick-command-line-install) for installing Miniconda.
