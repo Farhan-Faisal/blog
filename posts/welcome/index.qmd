@@ -72,7 +72,7 @@ conda activate tutorial
 ### Going One Step Further: Using Conda Lock Files 🚀 
 When you install an environment from an environment file, you might notice that additional packages, which were not explicitly listed, are also installed. For example, when we create the environment from our previous environment file, we see packages like `xx` installed:
 
-![Subdependency Installation](img/env_install.gif)
+![Subdependency Installation](../../img/env_install.gif)
 
 Why does this happen? This occurs because in the environment file, we only specify high-level packages.
 
@@ -135,7 +135,7 @@ conda-lock install --name tutorial conda-osx-arm64.lock
 
 You should generate all four conda lock files to ensure your collaborators have the necessary files for their respective platforms. Running the four commands will produce the following files:
 
-![Four Lock Files](./img/four_lock_files.png)
+![Four Lock Files](../../img/four_lock_files.png)
 
 **Note:**  
 - The --name flag specifies the environment name (tutorial in this case).
