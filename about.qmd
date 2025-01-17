@@ -1,15 +1,15 @@
 ---
 title: "About"
-image: profile.jpg
+image: img/comic-pic.jpg
 about:
   template: jolla
   links:
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/farhanbinfaisal/
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/Farhan-Faisal
 
 ---
 
