@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Intro to Environments with Conda"
+  title: "Data Science Blogs"
   navbar:
     right:
       - about.qmd
