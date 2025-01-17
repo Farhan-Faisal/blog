@@ -179,7 +179,7 @@ RUN mamba update --quiet --file /tmp/conda-linux-64.lock \
     && fix-permissions "/home/${NB_USER}"
 RUN pip install -r /tmp/requirements.txt
 ```
-Briefly, 
+Briefly,   
 - The `FROM` command tells us we are building off an existing environment (Linux, in this case).  
 - The `COPY` command is used to transfer your Conda lock file into the Docker container.  
 - The `RUN` command installs all the dependencies in the Docker container.  
