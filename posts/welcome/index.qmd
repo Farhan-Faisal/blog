@@ -15,14 +15,14 @@ Conda environments allow us to list all the necessary packages for a project, al
 
 You might wonder: why do we need environments in the first place? Why can't we just install the packages directly?
 
-The answer is simple: you may have multiple projects, each requiring a different set of packages. One project might need `Python 3.11`, while another requires `Python 3.9`. By using environments, you can maintain separate sets of installed packages and activate the appropriate set depending on the project you are working on.
+The answer is simple: you may have multiple projects, each requiring a different set of packages. One project might need `Python 3.11`, while another requires `Python 3.9`. By using environments, you can maintain separate sets of installed packages and activate the appropriate set depending on the project you are working on [[2]](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 In the next section, I will show you how to set up an environment file and install a conda environment from an environment file.
 
 
 ### Setting Up Conda Environments 🛠 
 
-**Step 1:** Installing Miniconda
+**Step 1:** Installing Miniconda [1]
 To get started, you need to install Miniconda, a lightweight version of Anaconda that provides just the essentials for managing Conda environments.
 
 Follow the detailed instructions provided [here](https://docs.anaconda.com/miniconda/install/#quick-command-line-install) for installing Miniconda.
@@ -76,7 +76,7 @@ When you install an environment from an environment file, you might notice that 
 
 Why does this happen? This occurs because in the environment file, we only specify high-level packages.
 
-But when installing a Conda environment across different operating systems, Conda may install different versions of these low-level packages. Consequently, even though the high-level packages remain the same, the overall environment may differ across platforms. Additionally, since we haven't specified exact versions for the low-level dependencies, installing the environment can take longer as Conda needs to resolve compatible versions on its own.
+But when installing a Conda environment across different operating systems, Conda may install different versions of these low-level packages. Consequently, even though the high-level packages remain the same, the overall environment may differ across platforms. Additionally, since we haven't specified exact versions for the low-level dependencies, installing the environment can take longer as Conda needs to resolve compatible versions on its own [[3]](https://conda-incubator.github.io/conda-lock/).
 
 ### The Solution? Conda Lock Files 🛡️ 
 Conda lock files are platform-specific files that list the exact versions of all dependency packages, including low-level ones, for a given environment. By using these lock files, you can ensure that the environment is identical across different platforms.
@@ -152,11 +152,12 @@ In the next stage, I’ll guide you through the steps of setting up a Docker con
 
 ### Docker Steps  🐳 
 
-**Step 1:** Create an account on [DockerHub](https://hub.docker.com)
+**Step 1:** Create an account on [DockerHub [4]](https://hub.docker.com)
 
 You need a DockerHub account to manage and store your Docker images. Sign up if you don't already have an account.
 
-**Step 2:** Download and Install [Docker](https://www.docker.com/get-started/)
+
+**Step 2:** Download and Install [Docker [5]](https://www.docker.com/get-started/)
 
 **Step 3:** Create the Dockerfile  
 Assuming you have the conda-lock file in your working project directory, create a file called `Dockerfile` in your project directory.
@@ -180,7 +181,7 @@ RUN mamba update --quiet --file /tmp/conda-linux-64.lock \
 RUN pip install -r /tmp/requirements.txt
 ```
 Briefly,   
-- The `FROM` command tells us we are building off an existing environment (Linux, in this case).  
+- The `FROM` command tells us we are building off an existing environment (Linux, in this case) [[6]](https://quay.io/repository/jupyter/minimal-notebook).  
 - The `COPY` command is used to transfer your Conda lock file into the Docker container.  
 - The `RUN` command installs all the dependencies in the Docker container.  
 
@@ -219,7 +220,7 @@ services:
     platform: linux/amd64
 ```
 
-**Step 2:** Install docker-compose
+**Step 2:** Install docker-compose [[7]](https://github.com/docker/compose/releases)
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
@@ -244,3 +245,27 @@ docker-compose down
 
 ### Conclusion 🏁 
 With this knowledge, you are now ready to collaborate effortlessly with others and ensure that your projects run smoothly on any system. Happy coding!
+
+
+### References
+
+1. Anaconda, Inc. *Installing Miniconda*. 2025.  
+   [https://docs.anaconda.com/miniconda/install/#quick-command-line-install](https://docs.anaconda.com/miniconda/install/#quick-command-line-install) (Accessed January 15, 2025).
+
+2. Conda Documentation. *Managing Environments with Conda*. 2025.  
+   [https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) (Accessed January 15, 2025).
+
+3. Conda Incubator. *Conda Lock Documentation*. 2025.  
+   [https://conda-incubator.github.io/conda-lock/](https://conda-incubator.github.io/conda-lock/) (Accessed January 15, 2025).
+
+4. Docker Inc. *DockerHub*. 2025.  
+   [https://hub.docker.com](https://hub.docker.com) (Accessed January 15, 2025).
+
+5. Docker Inc. *Get Started with Docker*. 2025.  
+   [https://www.docker.com/get-started/](https://www.docker.com/get-started/) (Accessed January 15, 2025).
+
+6. Quay.io. *Minimal Jupyter Notebook Docker Image*. 2025.  
+   [https://quay.io/repository/jupyter/minimal-notebook](https://quay.io/repository/jupyter/minimal-notebook) (Accessed January 15, 2025).
+
+7. Docker Inc. *Docker-Compose Installation Guide*. 2025.  
+   [https://github.com/docker/compose/releases](https://github.com/docker/compose/releases) (Accessed January 15, 2025).

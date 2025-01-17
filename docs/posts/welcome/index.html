@@ -192,12 +192,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="why-use-conda-environments">Why Use Conda Environments? 🤔</h3>
 <p>Conda environments allow us to list all the necessary packages for a project, along with their specific versions, in a single file. This way, when someone else wants to use our project, they can simply install all the required packages from this list, ensuring compatibility.</p>
 <p>You might wonder: why do we need environments in the first place? Why can’t we just install the packages directly?</p>
-<p>The answer is simple: you may have multiple projects, each requiring a different set of packages. One project might need <code>Python 3.11</code>, while another requires <code>Python 3.9</code>. By using environments, you can maintain separate sets of installed packages and activate the appropriate set depending on the project you are working on.</p>
+<p>The answer is simple: you may have multiple projects, each requiring a different set of packages. One project might need <code>Python 3.11</code>, while another requires <code>Python 3.9</code>. By using environments, you can maintain separate sets of installed packages and activate the appropriate set depending on the project you are working on <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">[2]</a>.</p>
 <p>In the next section, I will show you how to set up an environment file and install a conda environment from an environment file.</p>
 </section>
 <section id="setting-up-conda-environments" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-conda-environments">Setting Up Conda Environments 🛠</h3>
-<p><strong>Step 1:</strong> Installing Miniconda To get started, you need to install Miniconda, a lightweight version of Anaconda that provides just the essentials for managing Conda environments.</p>
+<p><strong>Step 1:</strong> Installing Miniconda [1] To get started, you need to install Miniconda, a lightweight version of Anaconda that provides just the essentials for managing Conda environments.</p>
 <p>Follow the detailed instructions provided <a href="https://docs.anaconda.com/miniconda/install/#quick-command-line-install">here</a> for installing Miniconda.</p>
 <p>For a quick installation on macOS (ARM64), open your terminal and run the following commands:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/miniconda3</span>
@@ -237,7 +237,7 @@ In your project folder, create a file named <code>environment.yaml</code>.</p>
 </figure>
 </div>
 <p>Why does this happen? This occurs because in the environment file, we only specify high-level packages.</p>
-<p>But when installing a Conda environment across different operating systems, Conda may install different versions of these low-level packages. Consequently, even though the high-level packages remain the same, the overall environment may differ across platforms. Additionally, since we haven’t specified exact versions for the low-level dependencies, installing the environment can take longer as Conda needs to resolve compatible versions on its own.</p>
+<p>But when installing a Conda environment across different operating systems, Conda may install different versions of these low-level packages. Consequently, even though the high-level packages remain the same, the overall environment may differ across platforms. Additionally, since we haven’t specified exact versions for the low-level dependencies, installing the environment can take longer as Conda needs to resolve compatible versions on its own <a href="https://conda-incubator.github.io/conda-lock/">[3]</a>.</p>
 </section>
 <section id="the-solution-conda-lock-files" class="level3">
 <h3 class="anchored" data-anchor-id="the-solution-conda-lock-files">The Solution? Conda Lock Files 🛡️</h3>
@@ -289,9 +289,9 @@ In your project folder, create a file named <code>environment.yaml</code>.</p>
 </section>
 <section id="docker-steps" class="level3">
 <h3 class="anchored" data-anchor-id="docker-steps">Docker Steps 🐳</h3>
-<p><strong>Step 1:</strong> Create an account on <a href="https://hub.docker.com">DockerHub</a></p>
+<p><strong>Step 1:</strong> Create an account on <a href="https://hub.docker.com">DockerHub [4]</a></p>
 <p>You need a DockerHub account to manage and store your Docker images. Sign up if you don’t already have an account.</p>
-<p><strong>Step 2:</strong> Download and Install <a href="https://www.docker.com/get-started/">Docker</a></p>
+<p><strong>Step 2:</strong> Download and Install <a href="https://www.docker.com/get-started/">Docker [5]</a></p>
 <p><strong>Step 3:</strong> Create the Dockerfile<br>
 Assuming you have the conda-lock file in your working project directory, create a file called <code>Dockerfile</code> in your project directory.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> quay.io/jupyter/minimal-notebook:afe30f0c9ad8</span>
@@ -311,7 +311,7 @@ Assuming you have the conda-lock file in your working project directory, create 
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&amp;&amp;</span> <span class="ex">fix-permissions</span> <span class="st">"/home/</span><span class="va">${NB_USER}</span><span class="st">"</span></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="ex">RUN</span> pip install <span class="at">-r</span> /tmp/requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Briefly,<br>
-- The <code>FROM</code> command tells us we are building off an existing environment (Linux, in this case).<br>
+- The <code>FROM</code> command tells us we are building off an existing environment (Linux, in this case) <a href="https://quay.io/repository/jupyter/minimal-notebook">[6]</a>.<br>
 - The <code>COPY</code> command is used to transfer your Conda lock file into the Docker container.<br>
 - The <code>RUN</code> command installs all the dependencies in the Docker container.</p>
 <p><strong>Step 4:</strong> Build the Docker Image</p>
@@ -342,7 +342,7 @@ Assuming you have the conda-lock file in your working project directory, create 
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">limits</span><span class="kw">:</span></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">memory</span><span class="kw">:</span><span class="at"> 10G</span></span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">platform</span><span class="kw">:</span><span class="at"> linux/amd64</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>Step 2:</strong> Install docker-compose</p>
+<p><strong>Step 2:</strong> Install docker-compose <a href="https://github.com/docker/compose/releases">[7]</a></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> curl <span class="at">-L</span> <span class="st">"https://github.com/docker/compose/releases/latest/download/docker-compose-</span><span class="va">$(</span><span class="fu">uname</span> <span class="at">-s</span><span class="va">)</span><span class="st">-</span><span class="va">$(</span><span class="fu">uname</span> <span class="at">-m</span><span class="va">)</span><span class="st">"</span> <span class="at">-o</span> /usr/local/bin/docker-compose</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Verify installation using:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -356,6 +356,25 @@ In your project directory, run:</p>
 <section id="conclusion" class="level3">
 <h3 class="anchored" data-anchor-id="conclusion">Conclusion 🏁</h3>
 <p>With this knowledge, you are now ready to collaborate effortlessly with others and ensure that your projects run smoothly on any system. Happy coding!</p>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ol type="1">
+<li><p>Anaconda, Inc.&nbsp;<em>Installing Miniconda</em>. 2025.<br>
+<a href="https://docs.anaconda.com/miniconda/install/#quick-command-line-install">https://docs.anaconda.com/miniconda/install/#quick-command-line-install</a> (Accessed January 15, 2025).</p></li>
+<li><p>Conda Documentation. <em>Managing Environments with Conda</em>. 2025.<br>
+<a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html</a> (Accessed January 15, 2025).</p></li>
+<li><p>Conda Incubator. <em>Conda Lock Documentation</em>. 2025.<br>
+<a href="https://conda-incubator.github.io/conda-lock/">https://conda-incubator.github.io/conda-lock/</a> (Accessed January 15, 2025).</p></li>
+<li><p>Docker Inc.&nbsp;<em>DockerHub</em>. 2025.<br>
+<a href="https://hub.docker.com">https://hub.docker.com</a> (Accessed January 15, 2025).</p></li>
+<li><p>Docker Inc.&nbsp;<em>Get Started with Docker</em>. 2025.<br>
+<a href="https://www.docker.com/get-started/">https://www.docker.com/get-started/</a> (Accessed January 15, 2025).</p></li>
+<li><p>Quay.io. <em>Minimal Jupyter Notebook Docker Image</em>. 2025.<br>
+<a href="https://quay.io/repository/jupyter/minimal-notebook">https://quay.io/repository/jupyter/minimal-notebook</a> (Accessed January 15, 2025).</p></li>
+<li><p>Docker Inc.&nbsp;<em>Docker-Compose Installation Guide</em>. 2025.<br>
+<a href="https://github.com/docker/compose/releases">https://github.com/docker/compose/releases</a> (Accessed January 15, 2025).</p></li>
+</ol>
 
 
 </section>
